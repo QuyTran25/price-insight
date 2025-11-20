@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Date>2025-11-05T00:00:00</Date>
+    <Author>Price Tracker Team</Author>
+    <Description>Tự động cào dữ liệu giá sản phẩm từ Tiki - 2 lần/ngày (8h, 16h) từ 05/11 đến 29/11/2025</Description>
+    <URI>\PriceTracker_AutoScraper</URI>
+  </RegistrationInfo>
+  
+  <Triggers>
+    <!-- Trigger 1: 08:00 sáng (từ 05/11 đến 29/11) -->
+    <CalendarTrigger>
+      <StartBoundary>2025-11-05T08:00:00</StartBoundary>
+      <EndBoundary>2025-11-29T23:59:59</EndBoundary>
+      <Enabled>true</Enabled>
+      <ScheduleByDay>
+        <DaysInterval>1</DaysInterval>
+      </ScheduleByDay>
+    </CalendarTrigger>
+    
+    <!-- Trigger 2: 16:00 chiều (từ 05/11 đến 29/11) -->
+    <CalendarTrigger>
+      <StartBoundary>2025-11-05T16:00:00</StartBoundary>
+      <EndBoundary>2025-11-29T23:59:59</EndBoundary>
+      <Enabled>true</Enabled>
+      <ScheduleByDay>
+        <DaysInterval>1</DaysInterval>
+      </ScheduleByDay>
+    </CalendarTrigger>
+  </Triggers>
+  
+  <Principals>
+    <Principal id="Author">
+      <LogonType>InteractiveToken</LogonType>
+      <RunLevel>HighestAvailable</RunLevel>
+    </Principal>
+  </Principals>
+  
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <StartWhenAvailable>true</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>true</RunOnlyIfNetworkAvailable>
+    <IdleSettings>
+      <StopOnIdleEnd>false</StopOnIdleEnd>
+      <RestartOnIdle>false</RestartOnIdle>
+    </IdleSettings>
+    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <Enabled>true</Enabled>
+    <Hidden>false</Hidden>
+    <RunOnlyIfIdle>false</RunOnlyIfIdle>
+    <DisallowStartOnRemoteAppSession>false</DisallowStartOnRemoteAppSession>
+    <UseUnifiedSchedulingEngine>true</UseUnifiedSchedulingEngine>
+    <WakeToRun>false</WakeToRun>
+    <ExecutionTimeLimit>PT1H</ExecutionTimeLimit>
+    <Priority>7</Priority>
+  </Settings>
+  
+  <Actions Context="Author">
+    <Exec>
+      <Command>cmd.exe</Command>
+      <Arguments>/c "d:\PROJECT_PRICE_TRACKER\scraper\run_scraper.bat"</Arguments>
+      <WorkingDirectory>d:\PROJECT_PRICE_TRACKER\scraper</WorkingDirectory>
+    </Exec>
+  </Actions>
+</Task>

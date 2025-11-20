@@ -1,0 +1,149 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#banner {
+    position: relative;
+}
+
+#banner svg {
+    width: 100% !important;
+    height: auto !important;
+    display: block;
+}
+
+#banner a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#trenhinh {
+    position: absolute;
+    top: 68%;
+    left: 73%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    cursor: pointer;
+}
+
+#trenhinh p {
+    color: #ffffff;
+    width: fit-content;
+    padding: 0.9375rem 2.5rem;
+    background-color: #CC0843;
+    border-radius: 1.25rem;
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-family: 'inter', sans-serif;
+    font-weight: 600;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+#trenhinh:hover p {
+    background-color: #a00635;
+    transform: scale(1.05);
+}
+
+#trenhinh:hover p {
+    background-color: #DB2777;
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.375rem 0.75rem rgba(0, 0, 0, 0.15);
+}
+
+#danhmucsp {
+    display: flex;
+    flex-direction: column;
+    padding: 0 5rem;
+}
+
+#danhmucsp .hang {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.hang .loai_sp {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 18rem;
+    height: 12.5rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 0.625rem;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    margin-bottom: 1.25rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.loai_sp:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(236, 72, 153, 0.2);
+    border-color: #EC4899;
+}
+
+.loai_sp i {
+    width: 4rem;
+    height: 4rem;
+    font-size: 2rem;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 1.25rem auto;
+    transition: all 0.3s ease;
+}
+
+.loai_sp:hover i {
+    transform: scale(1.1);
+}
+.loai_sp .fa-mobile {
+    color: #3B82F6;
+    background-color: #DBEAFE;
+}
+.loai_sp .fa-laptop {
+    color: #A855F7;
+    background-color: #F3E8FF;
+}
+.loai_sp .fa-headphones {
+    color: #22C55E;
+    background-color: #DCFCE7;
+}
+.loai_sp .fa-clock {
+    color: #F97316;
+    background-color: #FFEDD5;
+}
+.loai_sp .fa-tablet {
+    color: #EC4899;
+    background-color: #FCE7F3;
+}
+.loai_sp .fa-camera {
+    color: #CA8A04;
+    background-color: #FEF9C3;
+}
+.loai_sp .fa-tv {
+    color: #3B82F6;
+    background-color: #DBEAFE;
+}
+.loai_sp .fa-gamepad {
+    color: #EF4444;
+    background-color: #FEE2E2;
+}
+.loai_sp .ten_loai {
+    font-size: 1.0625rem;
+    font-family: 'inter', sans-serif;
+    font-weight: bold;
+    margin-bottom: 0.625rem;
+}
+.loai_sp .so_luong {
+    font-size: 0.875rem;
+    color: #6B7280;
+    font-family: 'inter', sans-serif;
+}
+
+

@@ -1,0 +1,15 @@
+# SSL Certificates - DO NOT COMMIT
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.pem
+*.key
+*.crt
+*.cer
+
+# Except README, scripts and examples
+!README.md
+!*.bat
+!*.sh
+!*.example

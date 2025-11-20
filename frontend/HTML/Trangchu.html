@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/main.css">
+    <link rel="stylesheet" href="../CSS/Trangchu.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Trang chủ - Price Insight</title>
+    
+    <!-- WebSocket for Real-time Updates -->
+    <script src="../JS/websocket.js"></script>
+</head>
+
+<body>
+    <div id="header"></div>
+    <div id="content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Price Insight</h1>
+            <p>Giúp bạn theo dõi biến động giá, để bạn luôn biết khi nào là thời điểm tốt nhất để mua.</p>
+            <div class="search-box">
+                <input type="text" placeholder="Tìm kiếm sản phẩm tại đây">
+                <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <h2 class="section-title">TÍNH NĂNG NỔI BẬT</h2>
+            <p class="section-subtitle">Công cụ mạnh mẽ giúp bạn mua sắm thông minh mỗi ngày</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-chart-area"></i></div>
+                    <h3>Theo dõi lịch sử giá</h3>
+                    <p>Xem biểu độ giá theo thời gian để mua đúng thời điểm tốt nhất</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-thumbs-up"></i></div>
+                    <h3>Đánh giá & so sánh</h3>
+                    <p>Xem đánh giá sao và chất lượng thực tế của từng sản phẩm, so sánh giá để tìm lựa chọn tốt nhất và
+                        mục giá tế nhất</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-ranking-star"></i></div>
+                    <h3>Theo dõi xu hướng</h3>
+                    <p>Nắm sát xu hướng tăng giảm để mua đúng lúc, không lo mua nó mua nó</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How to Use Section -->
+        <section class="how-to-use">
+            <h2 class="section-title">HƯỚNG DẪN SỬ DỤNG</h2>
+            <p class="section-subtitle">Chỉ với 3 bước đơn giản để tìm được giá tốt nhất:</p>
+
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Tìm kiếm sản phẩm</h3>
+                    <p>Nhập vào thanh tìm kiếm để tìm kiếm sản phẩm sơn muốn mua</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>So sánh giá</h3>
+                    <p>Sau khi tìm được sản phẩm ưng ý, bạn nhận vào xem chi tiết để so sánh lịch sử giá</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Mua với giá tốt nhất</h3>
+                    <p>Chọn deal tốt nhất và mua hàng với giá ưu đãi nhất có thể lúc đó</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Sẵn sàng tiết kiệm tiền của bạn?</h2>
+            <p>Tham gia cùng hàng nghìn người dùng thông minh mỗi ngày</p>
+            <button class="cta-button">Bắt đầu tiết kiệm <i class="fa-solid fa-cart-shopping"></i></button>
+        </section>
+    </div>
+    <div id="footer"></div>
+    <script src="../JS/loadFrame.js"></script>
+    <script>
+        // Search functionality
+        const searchInput = document.querySelector('.search-box input');
+        const ctaButton = document.querySelector('.cta-button');
+        
+        // Handle Enter key in search box
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    // Redirect to search results page with query parameter
+                    window.location.href = `timKiem.html?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+        
+        // Handle "Bắt đầu tiết kiệm" button click
+        ctaButton.addEventListener('click', function() {
+            // Redirect to search page
+            window.location.href = 'timKiem.html';
+        });
+    </script>
+</body>
+
+</html>

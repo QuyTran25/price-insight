@@ -1,0 +1,28 @@
+/* ---------------- Reset & Variables ---------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-dark: #000000;
+  --primary-light: #ffffff;
+  --accent-primary: #cc0843;
+  --accent-secondary: #de6187;
+  --accent-light: #ff9dbb;
+  --accent-lighter: #ffcedd;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
+  --bg-light: #f9f9f9;
+  --text-green: #16A34A;
+  --accent-hover: #b7073a;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--primary-light);
+  line-height: 1.6;
+}

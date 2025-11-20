@@ -1,0 +1,41 @@
+# Ignore files khi deploy
+.git/
+.gitignore
+*.md
+!README.md
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Local files
+*.bat
+*.log
+logs/
+
+# Client and scraper (không cần cho backend deployment)
+client/
+scraper/
+k6/
+ThongTinDuAn/
+tools/
+
+# Test files
+test/
+
+# Build artifacts (sẽ được rebuild trên Railway)
+server/bin/
+shared/bin/
+*.class
+
+# Certificates (sẽ config riêng cho production)
+server/certs/
+*.keystore
+*.jks
+*.p12
+
+# Local config
+config.ini
+.env
+.env.local

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/main.css">
+    <link rel="stylesheet" href="../CSS/Trangchitiet.css">
+    <link rel="stylesheet" href="../CSS/Chitietsanpham.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Price Insight - Chi tiết sản phẩm </title>
+    
+    <!-- WebSocket for Real-time Updates -->
+    <script src="../JS/websocket.js"></script>
+</head>
+
+<body>
+    <div id="header"></div>
+    <div id="content">
+        <!-- Nội dung trang sẽ được thêm vào đây -->
+        <!-- Product Header -->
+        <div class="product-header">
+            <div class="product-image-section">
+                <img src="../Picture/sony-wh-1000xm5.png" style="width: 450px; height: auto; margin-top: 20px;"
+                    alt="Sony WH-1000XM5" class="product-image">
+            </div>
+
+            <div class="product-info-section">
+                <h1 class="product-name">Đang tải...</h1>
+                <p class="brand"></p>
+
+                <div class="price-section">
+                    <div class="current-price">--</div>
+                    <div class="original-price">--</div>
+                </div>
+
+                <div class="discount-info" style="display: none;">
+                    <span class="discount-badge">💰 Giá được giảm - Tiết kiệm</span>
+                    <span class="savings" style="font-weight: 700; color: #16A34A;">--</span>
+                </div>
+
+                <div class="product-actions">
+                    <button class="btn-primary btn-buy">Mua Ngay</button>
+                </div>
+
+                <div class="product-guarantee">
+                    <div class="guarantee-item">
+                        <span class="guarantee-icon">✓</span>
+                        <span>Dữ liệu cập nhật từ Tiki</span>
+                    </div>
+                    <div class="guarantee-item">
+                        <span class="guarantee-icon">✓</span>
+                        <span>Theo dõi giá 24/7</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Price History Section -->
+        <div class="price-history-section">
+            <div class="section-header">
+                <h2>LỊCH SỬ BIẾN ĐỘNG</h2>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span class="update-time">Cập nhật: Hôm nay, 14:30</span>
+                    <button id="btnRefreshPrice" class="btn-refresh" 
+                            style="padding: 8px 16px; background: #EC4899; color: white; border: none; 
+                                   border-radius: 6px; cursor: pointer; font-weight: 600; 
+                                   display: flex; align-items: center; gap: 6px;
+                                   transition: all 0.3s; box-shadow: 0 2px 8px rgba(236,72,153,0.3);"
+                            onmouseover="this.style.background='#D14488'; this.style.transform='translateY(-2px)'"
+                            onmouseout="this.style.background='#EC4899'; this.style.transform='translateY(0)'">
+                        <i class="fas fa-sync-alt"></i> Làm mới giá
+                    </button>
+                </div>
+            </div>
+
+            <div class="price-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Giá cao nhất</div>
+                    <div class="stat-value">9.440.000đ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Giá thấp nhất</div>
+                    <div class="stat-value">6.660.000đ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Giá trung bình</div>
+                    <div class="stat-value">8.990.000đ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Mức giảm</div>
+                    <div class="stat-value">25%</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="priceChart"></canvas>
+            </div>
+
+            <div class="price-note">
+                <p>Phân tích: Giá sản phẩm đã giảm 25% trong 30 ngày qua. Đây không là lần đầu tiên để mua với giá
+                    7.490.000đ</p>
+            </div>
+        </div>
+
+        <!-- Similar Products Section -->
+        <div class="similar-products-section">
+            <h2>SẢN PHẨM TƯƠNG TỰ</h2>
+            <div class="sanpham">
+                <!-- Products will be loaded dynamically by JS -->
+            </div>
+        </div>
+    </div>
+    <div id="footer"></div>
+
+    <!-- Load frame script -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1"></script>
+    <script src="../JS/Trangchitiet.js"></script>
+    <script src="../JS/loadFrame.js"></script>
+</body>
+
+</html>
