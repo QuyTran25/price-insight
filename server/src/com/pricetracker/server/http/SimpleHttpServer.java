@@ -47,11 +47,16 @@ public class SimpleHttpServer {
     
     // 🗄️ Cache layer để giảm DB queries
     private final ProductCache cache;
+    private final com.pricetracker.server.websocket.SSEBroadcaster sseBroadcaster;
 
     /**
      * Constructor với port tùy chỉnh (dùng cho Railway/Render)
      */
     public SimpleHttpServer(int port) {
+        this(port, null);
+    }
+
+    public SimpleHttpServer(int port, com.pricetracker.server.websocket.SSEBroadcaster sseBroadcaster) {
         this.httpPort = port;
         this.productDAO = new ProductDAO();
         this.priceHistoryDAO = new PriceHistoryDAO();
@@ -60,6 +65,7 @@ public class SimpleHttpServer {
         
         // 🗄️ Initialize cache với TTL 5 phút
         this.cache = new ProductCache(CACHE_TTL_MS);
+        this.sseBroadcaster = sseBroadcaster;
     }
 
     /**
@@ -95,6 +101,10 @@ public class SimpleHttpServer {
         
         // ⚡ Sử dụng thread pool thay vì unlimited threads
         server.setExecutor(threadPool);
+        // Register SSE endpoint if broadcaster provided
+        if (sseBroadcaster != null) {
+            server.createContext("/events", this::handleSSE);
+        }
         server.start();
         
         System.out.println("✓ HTTP Server started on port " + httpPort);
@@ -104,6 +114,25 @@ public class SimpleHttpServer {
         System.out.println("  Frontend can also access product detail via: http://localhost:" + httpPort + "/product-detail");
         System.out.println("  Frontend can also access categories via: http://localhost:" + httpPort + "/categories");
         System.out.println("  📊 Metrics endpoint: http://localhost:" + httpPort + "/metrics");
+    }
+
+    private void handleSSE(HttpExchange exchange) throws IOException {
+        // Simple SSE endpoint
+        // Allow CORS for events
+        exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+
+        if ("OPTIONS".equals(exchange.getRequestMethod())) {
+            exchange.sendResponseHeaders(200, -1);
+            return;
+        }
+
+        try {
+            sseBroadcaster.addClient(exchange);
+            // do not close exchange here; SSEBroadcaster will hold open
+        } catch (IOException e) {
+            e.printStackTrace();
+            try { exchange.close(); } catch (Exception ex) { }
+        }
     }
 
     /**

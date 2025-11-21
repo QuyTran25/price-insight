@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * WebSocket Server để push real-time price updates tới frontend clients
  * Port: 8081
  */
-public class PriceWebSocketServer extends WebSocketServer {
+public class PriceWebSocketServer extends WebSocketServer implements com.pricetracker.server.websocket.Broadcaster {
     
     private final int wsPort;
     

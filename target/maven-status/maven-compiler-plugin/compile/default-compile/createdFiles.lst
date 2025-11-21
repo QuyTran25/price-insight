@@ -1,7 +1,11 @@
+com\pricetracker\server\config\WebSocketConfig.class
+com\pricetracker\server\websocket\PriceWebSocketHandler.class
 com\pricetracker\server\websocket\PriceWebSocketServer.class
 com\pricetracker\server\utils\TikiScraperUtil.class
+com\pricetracker\server\websocket\SSEBroadcaster.class
 com\pricetracker\shared\SerializationUtil.class
 com\pricetracker\models\Review.class
+com\pricetracker\server\websocket\SSEBroadcaster$Client.class
 com\pricetracker\models\Response.class
 com\pricetracker\server\utils\LazadaScraperUtil.class
 com\pricetracker\models\Request$Action.class
@@ -24,6 +28,7 @@ com\pricetracker\server\core\PriceTrackerServer.class
 com\pricetracker\models\PriceData.class
 com\pricetracker\models\Product.class
 com\pricetracker\shared\SerializationTest.class
+com\pricetracker\server\websocket\Broadcaster.class
 com\pricetracker\server\http\SimpleHttpServer.class
 com\pricetracker\server\http\SimpleHttpServer$ProductCache.class
 com\pricetracker\server\crypto\SSLManager.class

@@ -18,15 +18,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class PriceUpdateService {
     
-    private final PriceWebSocketServer webSocketServer;
+    private final Broadcaster broadcaster;
     private final ScheduledExecutorService scheduler;
     private Timestamp lastCheckTime;
     
     // Check interval: 30 seconds
     private static final int CHECK_INTERVAL_SECONDS = 30;
     
-    public PriceUpdateService(PriceWebSocketServer webSocketServer) {
-        this.webSocketServer = webSocketServer;
+    public PriceUpdateService(Broadcaster broadcaster) {
+        this.broadcaster = broadcaster;
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
         this.lastCheckTime = new Timestamp(System.currentTimeMillis());
     }
@@ -69,7 +69,7 @@ public class PriceUpdateService {
     private void checkForUpdates() {
         try {
             // Chỉ check khi có clients connected
-            if (webSocketServer.getClientCount() == 0) {
+            if (broadcaster.getClientCount() == 0) {
                 return;
             }
             
@@ -81,7 +81,7 @@ public class PriceUpdateService {
                 // Broadcast từng update
                 for (PriceUpdate update : updates) {
                     String json = createUpdateMessage(update);
-                    webSocketServer.broadcast(json);
+                    broadcaster.broadcast(json);
                 }
                 
                 // Update last check time

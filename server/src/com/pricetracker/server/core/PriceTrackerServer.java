@@ -265,24 +265,42 @@ public class PriceTrackerServer {
         
         // 2. Start HTTP Server - For Frontend
         System.out.println("\n🌐 Starting HTTP Server for Frontend...");
+
+        com.pricetracker.server.websocket.SSEBroadcaster sseBroadcaster = null;
+        final com.pricetracker.server.websocket.PriceWebSocketServer[] wsServerHolder = new com.pricetracker.server.websocket.PriceWebSocketServer[1];
+
+        // If running on a platform that sets PORT (eg. Railway), prefer SSE over a second public port
+        boolean useSSE = (portEnv != null);
+
+        if (useSSE) {
+            sseBroadcaster = new com.pricetracker.server.websocket.SSEBroadcaster();
+        }
+
         com.pricetracker.server.http.SimpleHttpServer httpServer = 
-            new com.pricetracker.server.http.SimpleHttpServer(httpPort);
+            new com.pricetracker.server.http.SimpleHttpServer(httpPort, sseBroadcaster);
         try {
             httpServer.start();
         } catch (Exception e) {
             System.err.println("✗ Failed to start HTTP server: " + e.getMessage());
         }
-        
-        // 3. Start WebSocket Server - For Real-time Updates
-        System.out.println("\n⚡ Starting WebSocket Server for Real-time Updates...");
-        com.pricetracker.server.websocket.PriceWebSocketServer wsServer = 
-            new com.pricetracker.server.websocket.PriceWebSocketServer(wsPort);
-        wsServer.start();
-        
+
+        // 3. Start WebSocket Server only when not using SSE (local/dev)
+        if (!useSSE) {
+            System.out.println("\n⚡ Starting WebSocket Server for Real-time Updates...");
+            wsServerHolder[0] = new com.pricetracker.server.websocket.PriceWebSocketServer(wsPort);
+            wsServerHolder[0].start();
+        } else {
+            System.out.println("\n⚡ Running in single-port mode (SSE) for real-time updates");
+        }
+
         // 4. Start Price Update Service (monitors database)
         System.out.println("📊 Starting Price Update Monitoring Service...");
-        com.pricetracker.server.websocket.PriceUpdateService updateService = 
-            new com.pricetracker.server.websocket.PriceUpdateService(wsServer);
+        com.pricetracker.server.websocket.PriceUpdateService updateService;
+        if (useSSE) {
+            updateService = new com.pricetracker.server.websocket.PriceUpdateService(sseBroadcaster);
+        } else {
+            updateService = new com.pricetracker.server.websocket.PriceUpdateService(wsServerHolder[0]);
+        }
         updateService.start();
         
         // Print summary
@@ -295,9 +313,15 @@ public class PriceTrackerServer {
         System.out.println("   ├─ /product-detail - Product details");
         System.out.println("   └─ /categories     - Product categories");
         System.out.println();
-        System.out.println("⚡ WebSocket Server: port 8081 (Real-time price updates)");
-        System.out.println("   ├─ Broadcasts price changes to all connected clients");
-        System.out.println("   └─ Checks database every 30 seconds");
+        if (useSSE) {
+            System.out.println("⚡ Real-time updates: SSE on /events (single HTTP port)");
+            System.out.println("   ├─ Clients connect using EventSource to /events");
+            System.out.println("   └─ Checks database every 30 seconds");
+        } else {
+            System.out.println("⚡ WebSocket Server: port " + wsPort + " (Real-time price updates)");
+            System.out.println("   ├─ Broadcasts price changes to all connected clients");
+            System.out.println("   └─ Checks database every 30 seconds");
+        }
         System.out.println();
         System.out.println("💡 Note: SSL Server (port 8888) disabled to save resources");
         System.out.println("   └─ Web demo only uses HTTP + WebSocket");
@@ -312,9 +336,11 @@ public class PriceTrackerServer {
             System.out.println("⏸️  Stopping Price Update Service...");
             updateService.stop();
             
-            // Stop WebSocket server
-            System.out.println("⏸️  Stopping WebSocket Server...");
-            wsServer.shutdown();
+            // Stop WebSocket server (if used)
+            if (wsServerHolder[0] != null) {
+                System.out.println("⏸️  Stopping WebSocket Server...");
+                wsServerHolder[0].shutdown();
+            }
             
             // Stop HTTP server
             System.out.println("⏸️  Stopping HTTP Server...");

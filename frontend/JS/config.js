@@ -1,28 +1,14 @@
-/**
- * Configuration cho Frontend
- * Tự động detect môi trường (local vs production)
- */
-
 const CONFIG = {
-    // Tự động detect environment
-    isProduction: window.location.hostname !== 'localhost' && 
-                  window.location.hostname !== '127.0.0.1',
+    // Bỏ qua phần detect, chúng ta sửa trực tiếp ở dưới
+    isProduction: true, 
     
     // Backend URLs
     get API_BASE_URL() {
-        if (this.isProduction) {
-            // Đã điền link Railway của bạn vào đây
-            return 'https://web-production-1107a3.up.railway.app';
-        }
-        return 'http://localhost:8080';
+        return 'https://web-production-1107a3.up.railway.app';
     },
     
     get WS_URL() {
-        if (this.isProduction) {
-            // WebSocket trên Railway dùng wss:// (Secure) và chung domain
-            return 'wss://web-production-1107a3.up.railway.app';
-        }
-        return 'ws://localhost:8081';
+        return 'wss://web-production-1107a3.up.railway.app/ws';
     },
     
     // API Endpoints

@@ -6,6 +6,7 @@
 class PriceWebSocketClient {
     constructor() {
         this.ws = null;
+        this.es = null; // EventSource instance (for SSE)
         this.reconnectDelay = 3000; // 3 giây
         this.maxReconnectDelay = 30000; // 30 giây max
         this.reconnectAttempts = 0;
@@ -24,65 +25,117 @@ class PriceWebSocketClient {
     connect() {
         try {
             // Sử dụng CONFIG từ config.js
-            const wsUrl = (typeof CONFIG !== 'undefined') ? CONFIG.WS_URL : 'ws://localhost:8081';
-            console.log('[WebSocket] Đang kết nối tới ' + wsUrl + '...');
-            
-            this.ws = new WebSocket(wsUrl);
-            
-            // Khi kết nối thành công
-            this.ws.onopen = (event) => {
-                console.log('[WebSocket] ✅ Kết nối thành công!');
-                this.reconnectDelay = 3000; // Reset delay
-                this.reconnectAttempts = 0;
-                this.notifyListeners('connected', event);
-                // Toast đã bỏ - chỉ log ra console
-            };
+            const isProduction = (typeof CONFIG !== 'undefined') ? CONFIG.isProduction : false;
+            const useSSE = isProduction; // Use SSE in production (single-port)
 
-            // Khi nhận message từ server
-            this.ws.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data);
-                    console.log('[WebSocket] 📥 Nhận message:', data);
-                    
-                    // Xử lý theo loại message
-                    switch (data.type) {
-                        case 'connected':
-                            console.log('[WebSocket] Server:', data.message);
-                            break;
-                            
-                        case 'price_update':
+            if (useSSE) {
+                const eventsUrl = (typeof CONFIG !== 'undefined') ? (CONFIG.API_BASE_URL + '/events') : '/events';
+                console.log('[SSE] Đang kết nối tới ' + eventsUrl + '...');
+
+                this.es = new EventSource(eventsUrl);
+
+                this.es.onopen = (event) => {
+                    console.log('[SSE] ✅ Kết nối thành công!');
+                    this.reconnectDelay = 3000;
+                    this.reconnectAttempts = 0;
+                    this.notifyListeners('connected', event);
+                };
+
+                this.es.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        console.log('[SSE] 📥 Nhận message:', data);
+                        if (data.type === 'price_update') {
                             this.handlePriceUpdate(data);
-                            break;
-                            
-                        case 'server_shutdown':
-                            console.warn('[WebSocket] Server đang shutdown:', data.message);
+                        } else if (data.type === 'server_shutdown') {
+                            console.warn('[SSE] Server shutting down:', data.message);
                             this.showToast('⚠️ Server đang bảo trì', 'warning');
-                            break;
-                            
-                        default:
-                            console.log('[WebSocket] Unknown message type:', data.type);
+                        } else {
+                            console.log('[SSE] Unknown message type:', data.type);
+                        }
+                    } catch (err) {
+                        console.error('[SSE] Lỗi parse message:', err);
                     }
-                } catch (error) {
-                    console.error('[WebSocket] Lỗi parse message:', error);
-                }
-            };
+                };
 
-            // Khi bị ngắt kết nối
-            this.ws.onclose = (event) => {
-                console.log('[WebSocket] ❌ Kết nối đã đóng:', event.code, event.reason);
-                this.notifyListeners('disconnected', event);
-                
-                // Tự động reconnect nếu không phải manual close
-                if (!this.isManualClose) {
-                    this.scheduleReconnect();
-                }
-            };
+                this.es.onerror = (err) => {
+                    console.error('[SSE] ⚠️ Lỗi kết nối:', err);
+                    this.notifyListeners('error', err);
+                    // EventSource tự động reconnects but we can schedule fallback reconnect logic
+                };
+            } else {
+                // WebSocket (development/local)
+                const wsUrl = (typeof CONFIG !== 'undefined') ? CONFIG.WS_URL : 'ws://localhost:8081';
+                console.log('[WebSocket] Đang kết nối tới ' + wsUrl + '...');
 
-            // Khi có lỗi
-            this.ws.onerror = (error) => {
-                console.error('[WebSocket] ⚠️ Lỗi kết nối:', error);
-                this.notifyListeners('error', error);
-            };
+                // --- BẮT ĐẦU ĐOẠN CODE THAY THẾ ---
+                if (wsUrl.includes("railway.app")) {
+                    console.log("🚀 Đang trên Railway: Chuyển sang chế độ SSE");
+                    
+                    const sseUrl = wsUrl.replace("wss://", "https://").replace("ws://", "http://").replace("/ws", "/events");
+                    this.ws = new EventSource(sseUrl);
+
+                } else {
+                    // 2. Nếu đang chạy Local -> Dùng WebSocket như cũ
+                    console.log("🏠 Đang chạy Local: Dùng WebSocket");
+                    this.ws = new WebSocket(wsUrl);
+                }
+                // --- KẾT THÚC ĐOẠN CODE THAY THẾ ---
+
+                // Khi kết nối thành công
+                this.ws.onopen = (event) => {
+                    console.log('[WebSocket] ✅ Kết nối thành công!');
+                    this.reconnectDelay = 3000; // Reset delay
+                    this.reconnectAttempts = 0;
+                    this.notifyListeners('connected', event);
+                };
+
+                // Khi nhận message từ server
+                this.ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        console.log('[WebSocket] 📥 Nhận message:', data);
+                        
+                        // Xử lý theo loại message
+                        switch (data.type) {
+                            case 'connected':
+                                console.log('[WebSocket] Server:', data.message);
+                                break;
+                                
+                            case 'price_update':
+                                this.handlePriceUpdate(data);
+                                break;
+                                
+                            case 'server_shutdown':
+                                console.warn('[WebSocket] Server đang shutdown:', data.message);
+                                this.showToast('⚠️ Server đang bảo trì', 'warning');
+                                break;
+                                
+                            default:
+                                console.log('[WebSocket] Unknown message type:', data.type);
+                        }
+                    } catch (error) {
+                        console.error('[WebSocket] Lỗi parse message:', error);
+                    }
+                };
+
+                // Khi bị ngắt kết nối
+                this.ws.onclose = (event) => {
+                    console.log('[WebSocket] ❌ Kết nối đã đóng:', event.code, event.reason);
+                    this.notifyListeners('disconnected', event);
+                    
+                    // Tự động reconnect nếu không phải manual close
+                    if (!this.isManualClose) {
+                        this.scheduleReconnect();
+                    }
+                };
+
+                // Khi có lỗi
+                this.ws.onerror = (error) => {
+                    console.error('[WebSocket] ⚠️ Lỗi kết nối:', error);
+                    this.notifyListeners('error', error);
+                };
+            }
 
         } catch (error) {
             console.error('[WebSocket] Lỗi khởi tạo:', error);
@@ -365,19 +418,32 @@ function addConnectionStatusIndicator() {
     // Update color theo trạng thái
     window.priceWS.on('connected', () => {
         indicator.style.background = '#4CAF50';
-        indicator.title = 'WebSocket: Connected';
+        indicator.title = 'Real-time: Connected';
     });
     
     window.priceWS.on('disconnected', () => {
         indicator.style.background = '#f44336';
-        indicator.title = 'WebSocket: Disconnected';
+        indicator.title = 'Real-time: Disconnected';
     });
     
     // Click để xem thông tin
     indicator.addEventListener('click', () => {
-        const status = window.priceWS.ws?.readyState;
-        const statusText = ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'][status] || 'UNKNOWN';
-        alert(`WebSocket Status: ${statusText}\nPort: 8081`);
+        const es = window.priceWS.es;
+        const ws = window.priceWS.ws;
+        let statusText = 'UNKNOWN';
+        let info = '';
+
+        if (es) {
+            const s = es.readyState;
+            statusText = ['CONNECTING', 'OPEN', 'CLOSED'][s] || 'UNKNOWN';
+            info = (typeof CONFIG !== 'undefined' ? (CONFIG.API_BASE_URL + '/events') : '/events');
+        } else if (ws) {
+            const s = ws.readyState;
+            statusText = ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'][s] || 'UNKNOWN';
+            info = (typeof CONFIG !== 'undefined' ? CONFIG.WS_URL : 'ws://localhost:8081');
+        }
+
+        alert(`Real-time Status: ${statusText}\nURL: ${info}`);
     });
 }
 
