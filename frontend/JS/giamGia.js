@@ -26,42 +26,9 @@ let displayedCounts = {
 // Load dữ liệu khi trang được tải
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🎁 Trang giảm giá đã load - bắt đầu kết nối backend...');
-    // Tạo debug panel (nếu cần) để hiển thị raw response khi không thể paste
-    createDebugPanel();
     loadAllDeals();
     setupFilterButtons();
 });
-
-/**
- * Tạo một debug panel nhỏ trên trang để show raw response
- * hữu ích khi không thể copy/paste từ DevTools
- */
-function createDebugPanel() {
-    if (document.getElementById('debug-panel')) return;
-    const panel = document.createElement('div');
-    panel.id = 'debug-panel';
-    panel.style.cssText = `position: fixed; left: 20px; bottom: 80px; right: 20px; max-height: 240px; overflow: auto; background: rgba(0,0,0,0.85); color: #fff; padding: 12px; border-radius: 8px; font-size:12px; z-index:99999; display:none;`;
-    panel.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <strong>Debug - /deals response</strong>
-            <button id="debug-close" style="background:#ff6b6b;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer">Close</button>
-        </div>
-        <pre id="debug-content" style="white-space:pre-wrap; font-size:12px; line-height:1.3;">(empty)</pre>
-    `;
-    document.body.appendChild(panel);
-    document.getElementById('debug-close').addEventListener('click', () => panel.style.display = 'none');
-}
-
-function showDebugPanel(obj, status) {
-    createDebugPanel();
-    const panel = document.getElementById('debug-panel');
-    const content = document.getElementById('debug-content');
-    let text = '';
-    if (typeof status !== 'undefined') text += `HTTP status: ${status}\n`;
-    try { text += JSON.stringify(obj, null, 2); } catch (e) { text += String(obj); }
-    content.textContent = text;
-    panel.style.display = 'block';
-}
 
 /**
  * Load tất cả sản phẩm giảm giá và phân loại vào các section
