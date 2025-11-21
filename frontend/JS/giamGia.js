@@ -2,7 +2,7 @@
  * giamGia.js - Load dữ liệu thực từ backend vào cấu trúc HTML có sẵn
  */
 
-const API_BASE_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_BASE_URL : 'http://localhost:8080';
+const API_BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.API_BASE_URL) ? CONFIG.API_BASE_URL : window.location.origin;
 const PRODUCTS_PER_ROW = 4;  // 4 sản phẩm mỗi hàng
 const ROWS_TO_SHOW = 2;      // Hiển thị 2 hàng = 8 sản phẩm
 const PRODUCTS_PER_PAGE = PRODUCTS_PER_ROW * ROWS_TO_SHOW;  // 8 sản phẩm

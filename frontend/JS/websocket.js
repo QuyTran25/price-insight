@@ -65,7 +65,7 @@ class PriceWebSocketClient {
                 };
             } else {
                 // WebSocket (development/local)
-                const wsUrl = (typeof CONFIG !== 'undefined') ? CONFIG.WS_URL : 'ws://localhost:8081';
+                const wsUrl = (typeof CONFIG !== 'undefined' && CONFIG.WS_URL) ? CONFIG.WS_URL : ((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws');
                 console.log('[WebSocket] Đang kết nối tới ' + wsUrl + '...');
 
                 // --- BẮT ĐẦU ĐOẠN CODE THAY THẾ ---
@@ -440,7 +440,7 @@ function addConnectionStatusIndicator() {
         } else if (ws) {
             const s = ws.readyState;
             statusText = ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'][s] || 'UNKNOWN';
-            info = (typeof CONFIG !== 'undefined' ? CONFIG.WS_URL : 'ws://localhost:8081');
+            info = (typeof CONFIG !== 'undefined' && CONFIG.WS_URL) ? CONFIG.WS_URL : ((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws');
         }
 
         alert(`Real-time Status: ${statusText}\nURL: ${info}`);

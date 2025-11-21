@@ -3,7 +3,7 @@
  * Fetch real data from backend and populate the page dynamically
  */
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.API_BASE_URL) ? CONFIG.API_BASE_URL : window.location.origin;
 
 /**
  * Get product ID from URL parameter

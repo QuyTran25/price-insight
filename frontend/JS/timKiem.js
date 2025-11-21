@@ -3,8 +3,7 @@
  * Handles communication with backend server and product card rendering
  */
 
-const SERVER_HOST = 'localhost';
-const SERVER_PORT = 8080; // HTTP server port (not TCP 8888)
+const API_BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.API_BASE_URL) ? CONFIG.API_BASE_URL : window.location.origin;
 
 /**
  * Perform search query to backend server
@@ -19,7 +18,7 @@ async function searchProducts(query) {
     console.log('🔍 Searching:', action, query);
     
     try {
-        const response = await fetch(`http://${SERVER_HOST}:${SERVER_PORT}/search`, {
+        const response = await fetch(`${API_BASE_URL}/search`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -53,7 +52,7 @@ async function searchProductsByCategory(groupId) {
     console.log('🔍 Searching by category:', groupId);
     
     try {
-        const response = await fetch(`http://${SERVER_HOST}:${SERVER_PORT}/search`, {
+        const response = await fetch(`${API_BASE_URL}/search`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -420,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (resultsInfo) {
                     resultsInfo.innerHTML = 
                         `<p class="error-message">Lỗi kết nối: ${error.message}<br>
-                        <small>Vui lòng đảm bảo server đang chạy tại ${SERVER_HOST}:${SERVER_PORT}</small></p>`;
+                            <small>Vui lòng đảm bảo server đang chạy tại ${API_BASE_URL}</small></p>`;
                     resultsInfo.style.display = 'block';
                 }
             });
@@ -505,7 +504,7 @@ function performSearchNow() {
             if (resultsInfo) {
                 resultsInfo.innerHTML = 
                     `<p class="error-message">Lỗi kết nối: ${error.message}<br>
-                    <small>Vui lòng đảm bảo server đang chạy tại ${SERVER_HOST}:${SERVER_PORT}</small></p>`;
+                        <small>Vui lòng đảm bảo server đang chạy tại ${API_BASE_URL}</small></p>`;
                 resultsInfo.style.display = 'block';
             }
             

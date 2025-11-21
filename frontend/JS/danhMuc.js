@@ -3,8 +3,7 @@
  * Fetches categories from server and displays them with product counts
  */
 
-const SERVER_HOST = 'localhost';
-const SERVER_PORT = 8080;
+const API_BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.API_BASE_URL) ? CONFIG.API_BASE_URL : window.location.origin;
 
 /**
  * Fetch all categories from server
@@ -13,7 +12,7 @@ async function loadCategories() {
     try {
         console.log('🔍 Loading categories from server...');
         
-        const response = await fetch(`http://${SERVER_HOST}:${SERVER_PORT}/categories`, {
+        const response = await fetch(`${API_BASE_URL}/categories`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -159,7 +158,7 @@ async function loadCategoryProducts(groupId, groupName, productCount) {
             productSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
         
-        const response = await fetch(`http://${SERVER_HOST}:${SERVER_PORT}/search`, {
+        const response = await fetch(`${API_BASE_URL}/search`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
