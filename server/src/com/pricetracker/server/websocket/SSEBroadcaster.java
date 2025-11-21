@@ -1,6 +1,7 @@
 package com.pricetracker.server.websocket;
 
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.Headers;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -46,9 +47,21 @@ public class SSEBroadcaster implements Broadcaster {
      * set response headers and keep the connection open.
      */
     public void addClient(HttpExchange exchange) throws IOException {
-        exchange.getResponseHeaders().add("Content-Type", "text/event-stream; charset=UTF-8");
-        exchange.getResponseHeaders().add("Cache-Control", "no-cache");
-        exchange.getResponseHeaders().add("Connection", "keep-alive");
+        Headers headers = exchange.getResponseHeaders();
+        // CORS for EventSource (allow Vercel frontend to connect)
+        if (!headers.containsKey("Access-Control-Allow-Origin")) {
+            headers.add("Access-Control-Allow-Origin", "*");
+        }
+        if (!headers.containsKey("Access-Control-Allow-Methods")) {
+            headers.add("Access-Control-Allow-Methods", "GET, OPTIONS");
+        }
+        if (!headers.containsKey("Access-Control-Allow-Headers")) {
+            headers.add("Access-Control-Allow-Headers", "Content-Type, Cache-Control, Pragma, Expires");
+        }
+
+        headers.add("Content-Type", "text/event-stream; charset=UTF-8");
+        headers.add("Cache-Control", "no-cache");
+        headers.add("Connection", "keep-alive");
         exchange.sendResponseHeaders(200, 0);
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(exchange.getResponseBody(), StandardCharsets.UTF_8));

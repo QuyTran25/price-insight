@@ -227,6 +227,18 @@ public class SimpleHttpServer {
     }
 
     private void sendResponse(HttpExchange exchange, int statusCode, String response) throws IOException {
+        // Ensure basic CORS headers are present for cross-origin clients (Vercel -> Railway)
+        Headers headers = exchange.getResponseHeaders();
+        if (!headers.containsKey("Access-Control-Allow-Origin")) {
+            headers.add("Access-Control-Allow-Origin", "*");
+        }
+        if (!headers.containsKey("Access-Control-Allow-Methods")) {
+            headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        }
+        if (!headers.containsKey("Access-Control-Allow-Headers")) {
+            headers.add("Access-Control-Allow-Headers", "Content-Type, Cache-Control, Pragma, Expires");
+        }
+
         byte[] bytes = response.getBytes(StandardCharsets.UTF_8);
         exchange.sendResponseHeaders(statusCode, bytes.length);
         OutputStream os = exchange.getResponseBody();
