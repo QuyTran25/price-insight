@@ -11,18 +11,16 @@ const CONFIG = {
     // Backend URLs
     get API_BASE_URL() {
         if (this.isProduction) {
-            // TODO: Thay YOUR_RAILWAY_APP_NAME bằng tên Railway app thật
-            // Ví dụ: https://price-tracker-backend-production.up.railway.app
-            return 'https://YOUR_RAILWAY_APP_NAME.up.railway.app';
+            // Đã điền link Railway của bạn vào đây
+            return 'https://web-production-1107a3.up.railway.app';
         }
         return 'http://localhost:8080';
     },
     
     get WS_URL() {
         if (this.isProduction) {
-            // WebSocket sẽ dùng cùng domain nhưng port khác (hoặc path /ws)
-            // Railway có thể config để route /ws tới WebSocket server
-            return 'wss://YOUR_RAILWAY_APP_NAME.up.railway.app';
+            // WebSocket trên Railway dùng wss:// (Secure) và chung domain
+            return 'wss://web-production-1107a3.up.railway.app';
         }
         return 'ws://localhost:8081';
     },
