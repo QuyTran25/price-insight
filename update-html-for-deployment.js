@@ -7,14 +7,14 @@ const fs = require('fs');
 const path = require('path');
 
 const htmlFiles = [
-    'frontend/HTML/index.html',
-    'frontend/HTML/timKiem.html',
-    'frontend/HTML/giamGia.html',
-    'frontend/HTML/Trangchitiet.html',
-    'frontend/HTML/danhMuc.html'
+    'frontend/index.html',
+    'frontend/timKiem.html',
+    'frontend/giamGia.html',
+    'frontend/Trangchitiet.html',
+    'frontend/danhMuc.html'
 ];
 
-const configScriptTag = '<script src="../JS/config.js"></script>';
+const configScriptTag = '<script src="JS/config.js"></script>';
 
 htmlFiles.forEach(filePath => {
     try {
@@ -27,7 +27,7 @@ htmlFiles.forEach(filePath => {
         }
         
         // Find where to insert (before websocket.js or first script tag)
-        const websocketScriptPos = content.indexOf('<script src="../JS/websocket.js">');
+        const websocketScriptPos = content.indexOf('<script src="JS/websocket.js">');
         if (websocketScriptPos !== -1) {
             // Insert before websocket.js
             content = content.slice(0, websocketScriptPos) + 

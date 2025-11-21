@@ -83,8 +83,8 @@ PROJECT_PRICE_TRACKER/
 │   ├── task_scheduler.xml           # Windows Task Scheduler
 │   └── logs/                        # Scraper logs
 │
-├── frontend/                        # Frontend HTML/CSS/JS
-│   ├── HTML/
+├── frontend/                        # Frontend /CSS/JS
+│   ├── /
 │   │   ├── index.html           # Homepage
 │   │   ├── timKiem.html            # Search page
 │   │   ├── giamGia.html            # Deals page
@@ -128,7 +128,7 @@ PROJECT_PRICE_TRACKER/
 
 - **server/**: Backend Java xử lý HTTP requests (port 8080), WebSocket (port 8081), và kết nối database
 - **scraper/**: Python script tự động cào giá từ Tiki API theo lịch trình
-- **frontend/**: Giao diện web tĩnh (HTML/CSS/JS) hiển thị dữ liệu và tương tác với server
+- **frontend/**: Giao diện web tĩnh (/CSS/JS) hiển thị dữ liệu và tương tác với server
 - **shared/**: Các class model được chia sẻ giữa server và client
 - **ThongTinDuAn/**: Tài liệu dự án, screenshots, và diagrams
 
@@ -702,7 +702,7 @@ Press Ctrl+C to stop all servers...
 #### 7.1. Mở trình duyệt
 ```powershell
 # Double-click hoặc:
-start frontend\HTML\index.html
+start frontend\index.html
 ```
 
 #### 7.2. Test kết nối
