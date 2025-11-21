@@ -39,7 +39,7 @@ function setActiveMenuItem() {
     
     // Map page names to menu items
     const pageMap = {
-        'trangchu.html': 0,
+        'index.html': 0,
         '': 0, // Default to Trang Chủ for root
         'index.html': 0,
         'giamgia.html': 1,

@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const htmlFiles = [
-    'frontend/HTML/Trangchu.html',
+    'frontend/HTML/index.html',
     'frontend/HTML/timKiem.html',
     'frontend/HTML/giamGia.html',
     'frontend/HTML/Trangchitiet.html',

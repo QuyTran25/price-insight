@@ -85,7 +85,7 @@ PROJECT_PRICE_TRACKER/
 │
 ├── frontend/                        # Frontend HTML/CSS/JS
 │   ├── HTML/
-│   │   ├── Trangchu.html           # Homepage
+│   │   ├── index.html           # Homepage
 │   │   ├── timKiem.html            # Search page
 │   │   ├── giamGia.html            # Deals page
 │   │   ├── Trangchitiet.html       # Product detail
@@ -702,7 +702,7 @@ Press Ctrl+C to stop all servers...
 #### 7.1. Mở trình duyệt
 ```powershell
 # Double-click hoặc:
-start frontend\HTML\Trangchu.html
+start frontend\HTML\index.html
 ```
 
 #### 7.2. Test kết nối

@@ -43,7 +43,7 @@ function showError(message) {
                         onmouseout="this.style.background='#EC4899'">
                     ← Quay lại
                 </button>
-                <button onclick="window.location.href='Trangchu.html'" 
+                <button onclick="window.location.href='index.html'" 
                         style="padding:14px 40px; background:#6C757D; color:white; 
                                border:none; border-radius:8px; cursor:pointer; font-size:1.1rem; 
                                font-weight:600; box-shadow:0 4px 12px rgba(108,117,125,0.3);
