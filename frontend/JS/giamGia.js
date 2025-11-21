@@ -35,15 +35,23 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 async function loadAllDeals() {
     try {
+        // Build endpoint using CONFIG endpoints when available
+        const dealsEndpoint = (typeof CONFIG !== 'undefined' && CONFIG.ENDPOINTS && CONFIG.API_BASE_URL)
+            ? (CONFIG.API_BASE_URL + CONFIG.ENDPOINTS.DEALS)
+            : (API_BASE_URL + '/deals');
+
         // Load ALL deals (bao gồm tất cả)
-        const response = await fetch(`${API_BASE_URL}/deals`, {
+        const response = await fetch(dealsEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ deal_type: 'ALL' })
         });
-        
-        if (!response.ok) throw new Error('Server không phản hồi');
-        
+
+        if (!response.ok) {
+            const text = await response.text().catch(() => 'No response body');
+            throw new Error(`Server không phản hồi (status=${response.status}): ${text}`);
+        }
+
         const data = await response.json();
         console.log('✅ Dữ liệu ALL nhận được:', data);
         
@@ -85,14 +93,21 @@ async function loadAllDeals() {
  */
 async function loadTrendingDeals() {
     try {
-        const response = await fetch(`${API_BASE_URL}/deals`, {
+        const dealsEndpoint = (typeof CONFIG !== 'undefined' && CONFIG.ENDPOINTS && CONFIG.API_BASE_URL)
+            ? (CONFIG.API_BASE_URL + CONFIG.ENDPOINTS.DEALS)
+            : (API_BASE_URL + '/deals');
+
+        const response = await fetch(dealsEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ deal_type: 'TRENDING' })
         });
-        
-        if (!response.ok) throw new Error('Server không phản hồi trending');
-        
+
+        if (!response.ok) {
+            const text = await response.text().catch(() => 'No response body');
+            throw new Error(`Server không phản hồi trending (status=${response.status}): ${text}`);
+        }
+
         const data = await response.json();
         console.log('✅ Dữ liệu TRENDING nhận được:', data);
         
