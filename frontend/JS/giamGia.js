@@ -36,9 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function loadAllDeals() {
     try {
         // Build endpoint using CONFIG endpoints when available
-        const dealsEndpoint = (typeof CONFIG !== 'undefined' && CONFIG.ENDPOINTS && CONFIG.API_BASE_URL)
-            ? (CONFIG.API_BASE_URL + CONFIG.ENDPOINTS.DEALS)
-            : (API_BASE_URL + '/deals');
+        const dealsEndpoint = CONFIG.API_BASE_URL + '/deals';
 
         // Load ALL deals (bao gồm tất cả)
         const response = await fetch(dealsEndpoint, {
@@ -95,10 +93,7 @@ async function loadAllDeals() {
  */
 async function loadTrendingDeals() {
     try {
-        const dealsEndpoint = (typeof CONFIG !== 'undefined' && CONFIG.ENDPOINTS && CONFIG.API_BASE_URL)
-            ? (CONFIG.API_BASE_URL + CONFIG.ENDPOINTS.DEALS)
-            : (API_BASE_URL + '/deals');
-
+        const dealsEndpoint = CONFIG.API_BASE_URL + '/deals';
         const response = await fetch(dealsEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
