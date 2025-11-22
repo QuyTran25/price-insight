@@ -1022,4 +1022,4 @@ Dự án được phát triển bởi nhóm 19
 
 ## Liên Hệ
 
-Nếu có thắc mắc hoặc góp ý về dự án, vui lòng tạo [Issue](https://github.com/QuyTran25/PROJECT_PRICE_TRACKER/issues) hoặc liên hệ qua email nhóm trưởng.
+Nếu có thắc mắc hoặc góp ý về dự án, vui lòng tạo [Issue](https://github.com/QuyTran25/PROJECT_PRICE_TRACKER/issues) hoặc liên hệ qua email nhóm trưởng .
