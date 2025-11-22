@@ -829,6 +829,7 @@ public class SimpleHttpServer {
                 System.out.println("⚠️  No price history found");
             }
 
+
             if (needsScrape) {
                 System.out.println("🔍 Scraping new price from Tiki...");
 
@@ -844,12 +845,12 @@ public class SimpleHttpServer {
                         double originalPrice = (Double) priceData[1];
                         String dealType = (String) priceData[2];
 
-                        // Save to database
+                        // Save to database with current timestamp (force update)
                         boolean saved = priceHistoryDAO.addCompletePriceRecord(
                                 productId, price, originalPrice, dealType);
 
                         if (saved) {
-                            System.out.println("✅ New price saved: " + price + "đ");
+                            System.out.println("✅ New price saved: " + price + "đ (" + java.time.Instant.now() + ")");
                         }
                     }
                 }
@@ -862,8 +863,10 @@ public class SimpleHttpServer {
             cache.invalidate(cacheKey);
             System.out.println("🗑️  Cache invalidated for product: " + productId);
 
-            // Return latest price data
+
+            // Return latest price data (always fetch again after scrape)
             PriceHistory currentPrice = priceHistoryDAO.getCurrentPrice(productId);
+            System.out.println("[DEBUG] Latest price record captured_at: " + (currentPrice != null && currentPrice.getCapturedAt() != null ? currentPrice.getCapturedAt().toInstant().toString() : "null"));
             JSONObject response = new JSONObject();
             response.put("success", true);
             if (currentPrice != null) {
