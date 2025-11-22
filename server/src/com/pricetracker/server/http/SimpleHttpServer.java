@@ -696,7 +696,8 @@ public class SimpleHttpServer {
                 JSONObject phJson = new JSONObject();
                 phJson.put("price", ph.getPrice());
                 phJson.put("original_price", ph.getOriginalPrice());
-                phJson.put("captured_at", ph.getCapturedAt().toString());
+                // Trả về ISO 8601 UTC
+                phJson.put("captured_at", ph.getCapturedAt() != null ? ph.getCapturedAt().toInstant().toString() : null);
                 phJson.put("deal_type", ph.getDealType() != null ? ph.getDealType() : "Normal");
                 priceHistoryArray.put(phJson);
             }
