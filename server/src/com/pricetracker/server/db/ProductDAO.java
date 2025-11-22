@@ -284,39 +284,42 @@ public class ProductDAO {
         String sql;
         
         if ("ALL".equals(dealType)) {
-            // ALL: Tất cả sản phẩm có giảm giá 
-            sql = "SELECT DISTINCT p.* " +
-                  "FROM product p " +
-                  "INNER JOIN price_history ph ON p.product_id = ph.product_id " +
-                  "WHERE ph.price_id IN (" +
-                  "    SELECT MAX(price_id) FROM price_history GROUP BY product_id" +
-                  ") AND ph.deal_type IN ('FLASH_SALE', 'HOT_DEAL', 'TRENDING') " +
-                  "AND ph.original_price > ph.price " +
+            // ALL: Lấy bản ghi mới nhất có deal-type hợp lệ cho mỗi sản phẩm
+            sql = "SELECT p.* FROM product p " +
+                  "INNER JOIN ( " +
+                  "  SELECT ph1.* FROM price_history ph1 " +
+                  "  INNER JOIN ( " +
+                  "    SELECT product_id, MAX(price_id) AS max_price_id " +
+                  "    FROM price_history WHERE deal_type IN ('FLASH_SALE', 'HOT_DEAL', 'TRENDING') AND original_price > price " +
+                  "    GROUP BY product_id " +
+                  "  ) ph2 ON ph1.product_id = ph2.product_id AND ph1.price_id = ph2.max_price_id " +
+                  ") ph ON p.product_id = ph.product_id " +
                   "ORDER BY ((ph.original_price - ph.price) / ph.original_price) DESC " +
                   "LIMIT 200";
-                  
         } else if ("TRENDING".equals(dealType)) {
-            // TRENDING: Lấy 1 sản phẩm trending mỗi danh mục
-            sql = "SELECT p.* " +
-                  "FROM product p " +
-                  "INNER JOIN price_history ph ON p.product_id = ph.product_id " +
-                  "WHERE ph.price_id IN (" +
-                  "    SELECT MAX(price_id) FROM price_history GROUP BY product_id" +
-                  ") AND ph.deal_type = 'TRENDING' " +
-                  "AND ph.original_price > ph.price " +
-                  "GROUP BY p.group_id " +
+            // TRENDING: Lấy bản ghi mới nhất có deal_type TRENDING cho mỗi sản phẩm
+            sql = "SELECT p.* FROM product p " +
+                  "INNER JOIN ( " +
+                  "  SELECT ph1.* FROM price_history ph1 " +
+                  "  INNER JOIN ( " +
+                  "    SELECT product_id, MAX(price_id) AS max_price_id " +
+                  "    FROM price_history WHERE deal_type = 'TRENDING' AND original_price > price " +
+                  "    GROUP BY product_id " +
+                  "  ) ph2 ON ph1.product_id = ph2.product_id AND ph1.price_id = ph2.max_price_id " +
+                  ") ph ON p.product_id = ph.product_id " +
                   "ORDER BY ((ph.original_price - ph.price) / ph.original_price) DESC " +
                   "LIMIT 20";
-                  
         } else {
-            // FLASH_SALE hoặc HOT_DEAL: Lấy theo deal_type
-            sql = "SELECT DISTINCT p.* " +
-                  "FROM product p " +
-                  "INNER JOIN price_history ph ON p.product_id = ph.product_id " +
-                  "WHERE ph.price_id IN (" +
-                  "    SELECT MAX(price_id) FROM price_history GROUP BY product_id" +
-                  ") AND ph.deal_type = ? " +
-                  "AND ph.original_price > ph.price " +
+            // FLASH_SALE hoặc HOT_DEAL: Lấy bản ghi mới nhất có deal_type tương ứng cho mỗi sản phẩm
+            sql = "SELECT p.* FROM product p " +
+                  "INNER JOIN ( " +
+                  "  SELECT ph1.* FROM price_history ph1 " +
+                  "  INNER JOIN ( " +
+                  "    SELECT product_id, MAX(price_id) AS max_price_id " +
+                  "    FROM price_history WHERE deal_type = ? AND original_price > price " +
+                  "    GROUP BY product_id " +
+                  "  ) ph2 ON ph1.product_id = ph2.product_id AND ph1.price_id = ph2.max_price_id " +
+                  ") ph ON p.product_id = ph.product_id " +
                   "ORDER BY ((ph.original_price - ph.price) / ph.original_price) DESC " +
                   "LIMIT 100";
         }
