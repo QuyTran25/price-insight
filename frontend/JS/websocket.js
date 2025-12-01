@@ -152,16 +152,16 @@ class PriceWebSocketClient {
         // Notify listeners
         this.notifyListeners('priceUpdate', data);
         
-        // Hiển thị toast notification
-        const priceStr = this.formatPrice(data.current_price);
-        const discountStr = data.discount_percent > 0 ? ` (-${data.discount_percent}%)` : '';
+        // Hiển thị toast notification - ĐÃ TẮT
+        // const priceStr = this.formatPrice(data.current_price);
+        // const discountStr = data.discount_percent > 0 ? ` (-${data.discount_percent}%)` : '';
         
-        this.showToast(
-            `🔥 ${data.product_name}<br>` +
-            `<strong>${priceStr}</strong>${discountStr}`,
-            'info',
-            5000
-        );
+        // this.showToast(
+        //     `🔥 ${data.product_name}<br>` +
+        //     `<strong>${priceStr}</strong>${discountStr}`,
+        //     'info',
+        //     5000
+        // );
         
         // Update UI nếu sản phẩm đang hiển thị trên trang
         this.updateProductOnPage(data);
