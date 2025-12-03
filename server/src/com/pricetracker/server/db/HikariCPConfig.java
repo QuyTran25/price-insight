@@ -45,17 +45,18 @@ public class HikariCPConfig {
 
             // === Pool Size Configuration ===
             // Maximum connections trong pool
-            // ⚡ Tăng từ 10 → 30 để support 50 concurrent users
-            // Formula: (50 users / 2) + buffer = ~30 connections
-            config.setMaximumPoolSize(Integer.parseInt(getProperty("db.pool.maxSize", "30")));
+            // ⚡ Tăng lên 50 để support high concurrency trên Railway
+            // Formula: (concurrent users × 0.5) + buffer = (100 × 0.5) + 0 = 50
+            config.setMaximumPoolSize(Integer.parseInt(getProperty("db.pool.maxSize", "50")));
             
             // Minimum idle connections (connections sẵn sàng chờ)
-            // ⚡ Tăng từ 5 → 15 để có đủ connections sẵn sàng
-            config.setMinimumIdle(Integer.parseInt(getProperty("db.pool.minIdle", "15")));
+            // ⚡ Tăng lên 20 để có đủ connections sẵn sàng, giảm latency
+            config.setMinimumIdle(Integer.parseInt(getProperty("db.pool.minIdle", "20")));
 
             // === Connection Timeout Settings ===
             // Thời gian chờ để lấy connection từ pool (milliseconds)
-            config.setConnectionTimeout(30000); // 30 seconds
+            // ⚡ Giảm từ 30s → 10s để fail fast, tránh blocking
+            config.setConnectionTimeout(10000); // 10 seconds
             
             // Thời gian tối đa một connection có thể idle (milliseconds)
             config.setIdleTimeout(600000); // 10 minutes

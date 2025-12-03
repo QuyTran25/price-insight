@@ -32,11 +32,12 @@ public class SimpleHttpServer {
     private final int httpPort;
 
     // ⚡ Thread Pool để xử lý concurrent requests
-    // 100 threads đủ cho 50 users (mỗi user có thể tạo 2 requests đồng thời)
-    private static final int THREAD_POOL_SIZE = 100;
+    // 20 threads tối ưu cho Railway 1-2 vCPU (giảm memory overhead)
+    // Formula: (CPU cores × 2) + spare threads = (1-2 × 2) + 10 = 20
+    private static final int THREAD_POOL_SIZE = 20;
 
-    // 🗄️ Cache TTL: 5 phút (300000ms) - đủ cho demo, data không đổi liên tục
-    private static final long CACHE_TTL_MS = 5 * 60 * 1000;
+    // 🗄️ Cache TTL: 30 phút (1800000ms) - tối ưu cache hit rate, giảm DB load
+    private static final long CACHE_TTL_MS = 30 * 60 * 1000;
 
     private HttpServer server;
     private ExecutorService threadPool;
@@ -105,6 +106,9 @@ public class SimpleHttpServer {
 
         // 📊 Metrics endpoint for monitoring
         server.createContext("/metrics", this::handleMetrics);
+
+        // 🏥 Health check endpoint (for UptimeRobot, Railway health checks)
+        server.createContext("/health", this::handleHealth);
 
         // ⚡ Sử dụng thread pool thay vì unlimited threads
         server.setExecutor(threadPool);
@@ -1115,6 +1119,49 @@ public class SimpleHttpServer {
             String errorResponse = String.format(
                     "{\"success\": false, \"error\": \"Server error: %s\"}",
                     e.getMessage().replace("\"", "\\\""));
+            sendResponse(exchange, 500, errorResponse);
+        }
+    }
+
+    /**
+     * 🏥 Health check endpoint - cho UptimeRobot, Railway health monitoring
+     * Lightweight response để keep server warm và prevent cold starts
+     */
+    private void handleHealth(HttpExchange exchange) throws IOException {
+        // Add CORS headers
+        Headers headers = exchange.getResponseHeaders();
+        headers.add("Access-Control-Allow-Origin", "*");
+        headers.add("Access-Control-Allow-Methods", "GET, OPTIONS");
+        headers.add("Content-Type", "application/json; charset=UTF-8");
+
+        // Handle preflight OPTIONS request
+        if ("OPTIONS".equals(exchange.getRequestMethod())) {
+            exchange.sendResponseHeaders(200, -1);
+            return;
+        }
+
+        try {
+            JSONObject health = new JSONObject();
+            health.put("status", "ok");
+            health.put("timestamp", System.currentTimeMillis());
+            health.put("uptime_seconds", java.lang.management.ManagementFactory.getRuntimeMXBean().getUptime() / 1000);
+            
+            // Quick DB check (timeout 2s)
+            boolean dbHealthy = false;
+            try {
+                dbHealthy = com.pricetracker.server.db.HikariCPConfig.testConnection();
+            } catch (Exception e) {
+                // DB check failed, but server still alive
+            }
+            health.put("database", dbHealthy ? "connected" : "disconnected");
+            
+            // Overall health
+            int statusCode = dbHealthy ? 200 : 503;
+            health.put("healthy", dbHealthy);
+
+            sendResponse(exchange, statusCode, health.toString());
+        } catch (Exception e) {
+            String errorResponse = "{\"status\": \"error\", \"message\": \"" + e.getMessage() + "\"}";
             sendResponse(exchange, 500, errorResponse);
         }
     }

@@ -1,1 +1,1 @@
-web: java -Xmx512m -Xms256m -jar target/price-tracker.jar
+web: java -Xmx1024m -Xms512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseStringDeduplication -jar target/price-tracker.jar

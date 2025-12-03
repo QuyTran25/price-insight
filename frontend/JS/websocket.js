@@ -20,15 +20,15 @@ class PriceWebSocketClient {
     }
 
     /**
-     * Kết nối tới WebSocket server
+     * Kết nối tới WebSocket server hoặc SSE
      */
     connect() {
         try {
-            // Sử dụng CONFIG từ config.js
+            // Sử dụng CONFIG từ config.js để xác định môi trường
             const isProduction = (typeof CONFIG !== 'undefined') ? CONFIG.isProduction : false;
-            const useSSE = isProduction; // Use SSE in production (single-port)
 
-            if (useSSE) {
+            if (isProduction) {
+                // Production: Sử dụng SSE (Server-Sent Events) qua HTTP
                 const eventsUrl = (typeof CONFIG !== 'undefined') ? (CONFIG.API_BASE_URL + '/events') : '/events';
                 console.log('[SSE] Đang kết nối tới ' + eventsUrl + '...');
 
@@ -51,7 +51,7 @@ class PriceWebSocketClient {
                             console.warn('[SSE] Server shutting down:', data.message);
                             this.showToast('⚠️ Server đang bảo trì', 'warning');
                         } else {
-                            console.log('[SSE] Unknown message type:', data.type);
+                            console.log('[SSE] Received message:', data);
                         }
                     } catch (err) {
                         console.error('[SSE] Lỗi parse message:', err);
@@ -61,26 +61,14 @@ class PriceWebSocketClient {
                 this.es.onerror = (err) => {
                     console.error('[SSE] ⚠️ Lỗi kết nối:', err);
                     this.notifyListeners('error', err);
-                    // EventSource tự động reconnects but we can schedule fallback reconnect logic
+                    // EventSource tự động reconnects
                 };
             } else {
-                // WebSocket (development/local)
-                const wsUrl = (typeof CONFIG !== 'undefined' && CONFIG.WS_URL) ? CONFIG.WS_URL : ((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws');
+                // Development: Sử dụng WebSocket
+                const wsUrl = (typeof CONFIG !== 'undefined' && CONFIG.WS_URL) ? CONFIG.WS_URL : 'ws://localhost:8081';
                 console.log('[WebSocket] Đang kết nối tới ' + wsUrl + '...');
 
-                // --- BẮT ĐẦU ĐOẠN CODE THAY THẾ ---
-                if (wsUrl.includes("railway.app")) {
-                    console.log("🚀 Đang trên Railway: Chuyển sang chế độ SSE");
-                    
-                    const sseUrl = wsUrl.replace("wss://", "https://").replace("ws://", "http://").replace("/ws", "/events");
-                    this.ws = new EventSource(sseUrl);
-
-                } else {
-                    // 2. Nếu đang chạy Local -> Dùng WebSocket như cũ
-                    console.log("🏠 Đang chạy Local: Dùng WebSocket");
-                    this.ws = new WebSocket(wsUrl);
-                }
-                // --- KẾT THÚC ĐOẠN CODE THAY THẾ ---
+                this.ws = new WebSocket(wsUrl);
 
                 // Khi kết nối thành công
                 this.ws.onopen = (event) => {

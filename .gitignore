@@ -63,8 +63,16 @@ desktop.ini
 
 # Compiled Java
 *.class
-*.jar
 bin/
+
+# Maven build directory
+target/
+dependency-reduced-pom.xml
+
+# JAR files (except libs)
+*.jar
+!server/lib/*.jar
+!client/lib/*.jar
 
 # Temporary files
 *.tmp
